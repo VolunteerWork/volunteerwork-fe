@@ -1,0 +1,1 @@
+export {default as useDeviceSize} from './use-device-size'
