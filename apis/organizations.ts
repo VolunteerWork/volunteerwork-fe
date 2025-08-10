@@ -5,7 +5,7 @@ import httpClient, { PaginatedResponse, handleError } from '@/lib/http-client'
 class OrganizationsApi {
 	async getMe() {
 		try {
-			return await httpClient.get<Organization>('/organization/loginedInfo')
+			return await httpClient.get<Organization>('/organization/me')
 		} catch (error) {
 			handleError(error, OrganizationError)
 		}
@@ -13,14 +13,7 @@ class OrganizationsApi {
 
 	async getInfo(id: string) {
 		try {
-			return await httpClient.get<Organization>(
-				'/organization/organizationInfo',
-				{
-					params: {
-						organizationId: id,
-					},
-				},
-			)
+			return await httpClient.get<Organization>(`/organization/${id}`)
 		} catch (error) {
 			handleError(error, OrganizationError)
 		}
@@ -30,7 +23,7 @@ class OrganizationsApi {
 		try {
 			const formData = new FormData()
 			formData.append('image', file)
-			return await httpClient.post('/organization/uploadAvatar', formData)
+			return await httpClient.post('/organization/upload-avatar', formData)
 		} catch (error) {
 			handleError(error, OrganizationError)
 		}
@@ -42,14 +35,14 @@ class OrganizationsApi {
 		>,
 	) {
 		try {
-			return await httpClient.post('/organization/updateOrganization', data)
+			return await httpClient.put('/organization', data)
 		} catch (error) {}
 	}
 
 	async getOrganizations(data: { limit: number; page: number }) {
 		try {
 			return await httpClient.post<PaginatedResponse<Organization>>(
-				'/organization/organizations',
+				'/organization',
 				data,
 			)
 		} catch (error) {

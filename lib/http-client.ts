@@ -20,12 +20,23 @@ class HttpClient {
 		})
 	}
 
-	private getUrl(endpoint: string) {
-		return `${this.baseUrl}${endpoint}`
+	appendAuthHeader<AxiosRequestConfig>(addConfig?: AxiosRequestConfig){
+		let jwtToken=localStorage.getItem('Authorization')
+		addConfig
+		if(jwtToken){
+			return {
+				...addConfig, 
+				headers: {
+					Authorization: jwtToken
+				}
+			} as AxiosRequestConfig;
+		}
+		else return addConfig;
 	}
 
 	async get<T = any>(endpoint: string, config?: AxiosRequestConfig) {
-		const response = await this.instance.get<T>(this.getUrl(endpoint), config)
+		console.log("config", this.appendAuthHeader(config))
+		const response = await this.instance.get<T>(endpoint, this.appendAuthHeader(config))
 		return response.data
 	}
 
@@ -35,9 +46,22 @@ class HttpClient {
 		config?: AxiosRequestConfig,
 	) {
 		const response = await this.instance.post<T>(
-			this.getUrl(endpoint),
+			endpoint,
 			data,
-			config,
+			this.appendAuthHeader(config),
+		)
+		return response.data
+	}
+
+	async put<T = any>(
+		endpoint: string,
+		data?: object,
+		config?: AxiosRequestConfig,
+	) {
+		const response = await this.instance.put<T>(
+			endpoint,
+			data,
+			this.appendAuthHeader(config),
 		)
 		return response.data
 	}
@@ -48,17 +72,17 @@ class HttpClient {
 		config?: AxiosRequestConfig,
 	) {
 		const response = await this.instance.patch<T>(
-			this.getUrl(endpoint),
+			endpoint,
 			data,
-			config,
+			this.appendAuthHeader(config),
 		)
 		return response.data
 	}
 
 	async delete<T = any>(endpoint: string, config?: AxiosRequestConfig) {
 		const response = await this.instance.delete<T>(
-			this.getUrl(endpoint),
-			config,
+			endpoint,
+			this.appendAuthHeader(config),
 		)
 		return response.data
 	}

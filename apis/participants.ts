@@ -9,7 +9,7 @@ class ParticipantsApi {
 	}) {
 		try {
 			return await httpClient.post<Participant[]>(
-				'/participant/participants',
+				'/participant/all',
 				data,
 			)
 		} catch (error) {
@@ -20,7 +20,7 @@ class ParticipantsApi {
 	async joinVolunteerWork(id: string) {
 		try {
 			return await httpClient.post<Participant>(
-				'/participant/joinVolunteerWork',
+				'/participant/join-volunteer-work',
 				{
 					volunteerWorkId: id,
 				},
@@ -31,16 +31,15 @@ class ParticipantsApi {
 	}
 
 	async acceptParticipant(data: {
-		participantId: string
-		isAccepted: boolean
+		participantId: string;
+		isAccepted: boolean;
 	}) {
 		try {
 			return await httpClient.post<Participant>(
-				'/participant/acceptParticipant',
-				data,
-			)
+				`/participant/accept/${data.participantId}?isAccepted=${data.isAccepted}`
+			);
 		} catch (error) {
-			handleError(error, ParticipantsError)
+			handleError(error, ParticipantsError);
 		}
 	}
 
@@ -59,7 +58,7 @@ class ParticipantsApi {
 	async getActivities(studentId: string) {
 		try {
 			return await httpClient.get<Participant[]>(
-				'/participant/finishedParticipants/' + studentId,
+				'/participant/finished-participants/' + studentId,
 			)
 		} catch (error) {
 			handleError(error, ParticipantsError)

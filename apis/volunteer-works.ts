@@ -36,7 +36,7 @@ class VolunteerWorksApi {
 			formData.append('image', image)
 
 			return await httpClient.post<VolunteerWork>(
-				'/volunteerWork/newVolunteerWork',
+				'/volunteerwork',
 				formData,
 			)
 		} catch (error) {
@@ -47,8 +47,7 @@ class VolunteerWorksApi {
 	async getInfo(id: string) {
 		try {
 			return await httpClient.get<VolunteerWork>(
-				'/volunteerWork/volunteerWorkInfo',
-				{ params: { volunteerWorkId: id } },
+				`/volunteerwork/${id}`
 			)
 		} catch (error) {
 			handleError(error, VolunteerWorkError)
@@ -62,7 +61,7 @@ class VolunteerWorksApi {
 	}) {
 		try {
 			return await httpClient.post<PaginatedResponse<VolunteerWork>>(
-				'/volunteerWork/orgVolunteerWorks',
+				`/volunteerwork/org/${data.organizationId}`,
 				data,
 			)
 		} catch (error) {
@@ -73,7 +72,7 @@ class VolunteerWorksApi {
 	async get(data: { limit: number; page: number }) {
 		try {
 			return await httpClient.post<PaginatedResponse<VolunteerWork>>(
-				'/volunteerWork/volunteerWorks',
+				'/volunteerwork/all',
 				data,
 			)
 		} catch (error) {
@@ -83,7 +82,7 @@ class VolunteerWorksApi {
 
 	async addQuestion(data: { questionText: string; volunteerWorkId: string }) {
 		try {
-			return await httpClient.post('/volunteerWork/addQuestion', data)
+			return await httpClient.post('/volunteerwork/add-question', data)
 		} catch (error) {
 			handleError(error, VolunteerWorkError)
 		}
@@ -91,7 +90,7 @@ class VolunteerWorksApi {
 
 	async answerQuestion(data: { questionId: string; answer: string }) {
 		try {
-			return await httpClient.post('/volunteerWork/answerQuestion', data)
+			return await httpClient.post('/volunteerwork/answer-question', data)
 		} catch (error) {
 			handleError(error, VolunteerWorkError)
 		}
@@ -99,7 +98,7 @@ class VolunteerWorksApi {
 
 	async addEvent(data: AddEventData) {
 		try {
-			return await httpClient.post('/volunteerWork/newEvent', data)
+			return await httpClient.post('/volunteerwork/new-event', data)
 		} catch (error) {
 			handleError(error, VolunteerWorkError)
 		}
@@ -113,8 +112,8 @@ class VolunteerWorksApi {
 				formData.append('image', file)
 			}
 
-			return await httpClient.post(
-				'/volunteerWork/updateVolunteerWork',
+			return await httpClient.put(
+				'/volunteerwork',
 				formData,
 			)
 		} catch (error) {
@@ -124,7 +123,7 @@ class VolunteerWorksApi {
 
 	async deleteEvent(eventId: string) {
 		try {
-			return await httpClient.delete('/volunteerWork/deleteEvent/' + eventId)
+			return await httpClient.delete('/volunteerwork/delete-event/' + eventId)
 		} catch (error) {
 			handleError(error, VolunteerWorkError)
 		}
@@ -133,7 +132,7 @@ class VolunteerWorksApi {
 	async deleteVolunteerWork(volunteerWorkId: string) {
 		try {
 			return await httpClient.delete(
-				'/volunteerWork/deleteVolunteerWork/' + volunteerWorkId,
+				`/volunteerwork/${volunteerWorkId}`,
 			)
 		} catch (error) {
 			handleError(error, VolunteerWorkError)

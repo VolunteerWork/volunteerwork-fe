@@ -35,11 +35,19 @@ export default function useAuth() {
 	const { mutate: logIn, isPending: isLoggingIn } = useMutation({
 		mutationFn: authApi.logIn,
 		onSuccess: data => {
-			toast({
-				description: 'Đăng nhập thành công',
-			})
-			setIsLoggedIn(true)
-			setIsOrganization(data!.role === AccountRole.ORGANIZATION)
+			if(data){
+				toast({
+					description: 'Đăng nhập thành công',
+				})
+				localStorage.setItem('Authorization', data.jwtToken);
+				setIsLoggedIn(true)
+				setIsOrganization(data.account?.role === AccountRole.ORGANIZATION)
+			}
+			else {
+				toast({
+					description: 'Đăng nhập thất bại'
+				})
+			}
 		},
 		onError: error => {
 			toast({
@@ -53,6 +61,7 @@ export default function useAuth() {
 	const { mutate: logOut } = useMutation({
 		mutationFn: authApi.logOut,
 		onSuccess: () => {
+			localStorage.removeItem('Authorization')
 			removeIsLoggedIn()
 			removeIsOrganization()
 			queryClient.removeQueries({ queryKey: queryKeys.account })
@@ -76,6 +85,6 @@ export default function useAuth() {
 		isOrganization,
 		logOut,
 		logIn,
-		isLoggingIn,
+		isLoggingIn
 	}
 }

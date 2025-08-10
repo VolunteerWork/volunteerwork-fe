@@ -5,7 +5,7 @@ import httpClient, { handleError } from '@/lib/http-client'
 class PersonsApi {
 	async getMe() {
 		try {
-			return await httpClient.get<Person>('/student/loginedInfo')
+			return await httpClient.get<Person>('/student/me')
 		} catch (error) {
 			handleError(error, PersonError)
 		}
@@ -13,11 +13,7 @@ class PersonsApi {
 
 	async getInfo(id: string) {
 		try {
-			return await httpClient.get<Person>('/student/studentInfo', {
-				params: {
-					studentId: id,
-				},
-			})
+			return await httpClient.get<Person>(`/student/${id}`)
 		} catch (error) {
 			handleError(error, PersonError)
 		}
@@ -27,7 +23,7 @@ class PersonsApi {
 		try {
 			const formData = new FormData()
 			formData.append('image', file)
-			return await httpClient.post('/student/uploadAvatar', formData)
+			return await httpClient.post('/student/upload-avatar', formData)
 		} catch (error) {
 			handleError(error, PersonError)
 		}
@@ -39,13 +35,13 @@ class PersonsApi {
 		>,
 	) {
 		try {
-			return await httpClient.post('/student/updateStudent', data)
+			return await httpClient.put('/student', data)
 		} catch (error) {}
 	}
 
 	async getTop10() {
 		try {
-			return await httpClient.get<Person[]>('/student/top10Students')
+			return await httpClient.get<Person[]>('/student/top-10-students')
 		} catch (error) {
 			handleError(error, PersonError)
 		}
