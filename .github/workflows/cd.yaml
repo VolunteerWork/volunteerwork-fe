@@ -7,7 +7,6 @@ on:
 
 env:
   IMAGE_NAME: "hungtran679/volunteerwork-frontend"
-  IMAGE_TAG: "${{ github.sha[0:8] }}-${{ github.run_number }}"
 
   ECS_CLUSTER: "volunteerwork-prod-ecs-cluster"
   ECS_TASK_DEFINITION_FAMILY: "volunteerwork-prod-frontend-family"
@@ -28,12 +27,18 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Export Image Ref
+        id: export-image-ref
+        outputs:
+          image_ref: ${{ steps.export-image-ref.outputs.image_ref }}
+        run: echo "image_ref=$IMAGE_NAME:${GITHUB_SHA::8}-${GITHUB_RUN_NUMBER}" >> $GITHUB_OUTPUT
       
       - name: Build docker image
-        run: docker build -t ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} .
+        run: docker build -t ${{ steps.export-image-ref.outputs.image-ref }} .
       
       - name: Push to Docker Registry
-        run: docker push ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+        run: docker push ${{ steps.export-image-ref.outputs.image-ref }}
 
   deploy:   
     runs-on: ubuntu-latest
@@ -56,7 +61,7 @@ jobs:
         with:
           task-definition: task-definition.json
           container-name: ${{ env.ECS_CONTAINER_NAME }}
-          image: ${{ steps.build-image.outputs.image }}
+          image: ${{ needs.build_and_publish.steps.export-image-ref.outputs.image-ref }}
 
       - name: Deploy Amazon ECS task definition
         uses: aws-actions/amazon-ecs-deploy-task-definition@v2
