@@ -7,7 +7,7 @@ on:
 
 env:
   IMAGE_NAME: "hungtran679/volunteerwork-frontend"
-  IMAGE_TAG: "${{ github.sha.substr(0,8) }}-${{ github.run_number }}"
+  IMAGE_TAG: "${{ github.sha[0:8] }}-${{ github.run_number }}"
 
   ECS_CLUSTER: "volunteerwork-prod-ecs-cluster"
   ECS_TASK_DEFINITION_FAMILY: "volunteerwork-prod-frontend-family"
