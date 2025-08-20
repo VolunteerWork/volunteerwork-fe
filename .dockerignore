@@ -1,5 +1,6 @@
 node_modules/
 .deployment
 .github/
+infrastructure
 .git
 *.env
